@@ -2567,12 +2567,14 @@ void MainFrame::select_tab(ETabType tab /* = Any*/, bool keep_tab_type)
             return;
         } else {
             select(false);
+#ifdef _MSW_DARK_MODE
             //force update if change from plater to plater
             if (bt_sel != int(tab) && bt_sel < int(ETabType::LastPlater)) {
                 wxBookCtrlEvent evt = wxBookCtrlEvent(wxEVT_BOOKCTRL_PAGE_CHANGED);
                 evt.SetOldSelection(tab_sel);
                 wxPostEvent(this, evt);
             }
+#endif
         }
     }
     else
