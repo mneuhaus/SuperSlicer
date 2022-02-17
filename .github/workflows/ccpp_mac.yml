@@ -3,7 +3,7 @@ name: C/C++ Nigthly macos
 on:
   push:
     branches:
-      - Nigthly
+      - master_dev
 
 jobs:
   build:
@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: 'Nigthly'
+        ref: 'master_dev'
     - name: build deps & slicer
       run: ./BuildMacOS.sh -i
     - name: Upload artifact
