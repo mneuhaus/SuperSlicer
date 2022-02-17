@@ -59,6 +59,7 @@ set(ANGELSCRIPT_HEADERS
     source/as_tokenizer.h
     source/as_typeinfo.h
     source/as_variablescope.h
+	add_on/autowrapper/aswrappedcall.h
 	add_on/contextmgr/contextmgr.h
 	add_on/scriptarray/scriptarray.h
 	add_on/scriptbuilder/scriptbuilder.h
@@ -100,6 +101,7 @@ set(ANGELSCRIPT_SOURCE
     source/as_tokenizer.cpp
     source/as_typeinfo.cpp
     source/as_variablescope.cpp
+	add_on/autowrapper/generator/generateheader.cpp
 	add_on/contextmgr/contextmgr.cpp
 	add_on/scriptarray/scriptarray.cpp
 	add_on/scriptbuilder/scriptbuilder.cpp
@@ -115,23 +117,19 @@ if(MSVC AND CMAKE_CL_64)
     else()
         message(FATAL ERROR "MSVC x86_64 target requires a working assembler")
     endif()
-endif()
-
-if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^arm")
-    enable_language(ASM)
-    if(CMAKE_ASM_COMPILER_WORKS)
-        set(ANGELSCRIPT_SOURCE ${ANGELSCRIPT_SOURCE} source/as_callfunc_arm.cpp source/as_callfunc_arm_gcc.S)
-        set_property(SOURCE source/as_callfunc_arm_gcc.S APPEND PROPERTY COMPILE_FLAGS " -Wa,-mimplicit-it=always")
-    else()
-        message(FATAL ERROR "ARM target requires a working assembler")
-    endif()
-endif()
-
-if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^aarch64")
+elseif(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^aarch64" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "^arm64")
     enable_language(ASM)
     if(CMAKE_ASM_COMPILER_WORKS)
         set(ANGELSCRIPT_SOURCE ${ANGELSCRIPT_SOURCE} source/as_callfunc_arm64.cpp source/as_callfunc_arm64_gcc.S)
         #set_property(SOURCE source/as_callfunc_arm64_gcc.S APPEND PROPERTY COMPILE_FLAGS " -Wa")
+    else()
+        message(FATAL ERROR "ARM target requires a working assembler")
+    endif()
+elseif(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^arm")
+    enable_language(ASM)
+    if(CMAKE_ASM_COMPILER_WORKS)
+        set(ANGELSCRIPT_SOURCE ${ANGELSCRIPT_SOURCE} source/as_callfunc_arm.cpp source/as_callfunc_arm_gcc.S)
+        set_property(SOURCE source/as_callfunc_arm_gcc.S APPEND PROPERTY COMPILE_FLAGS " -Wa,-mimplicit-it=always")
     else()
         message(FATAL ERROR "ARM target requires a working assembler")
     endif()
